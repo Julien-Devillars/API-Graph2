@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt
 from node_editor.pin import Pin
 from node_editor.gui.node_graphics import Node_Graphics
 from node_editor.common import Node_Status
-
+from node_editor.PinUtils import PinType
 
 class Node(Node_Graphics):
     data = None
@@ -42,7 +42,7 @@ class Node(Node_Graphics):
         return
            
     def execute_output(self, output_pin):
-        if output_pin.execution:
+        if output_pin.pin_type == PinType.EXEC:
             output_pin.execute_connected()
     
     def delete(self):
@@ -82,7 +82,7 @@ class Node(Node_Graphics):
                 pin_outputs.append(pin)
         return pin_outputs
 
-    def add_pin(self, name, is_output=False, execution=False, execute = None):
+    def add_pin(self, name, is_output=False, pin_type = PinType.BASE):
         """
         Adds a new pin to the node.
 
@@ -100,8 +100,7 @@ class Node(Node_Graphics):
         pin.is_output = is_output
         pin.set_name(name)
         pin.node = self
-        pin.set_execution(execution)
-        pin.set_execute(execute)
+        pin.set_type(pin_type)
 
         self._pins.append(pin)
 

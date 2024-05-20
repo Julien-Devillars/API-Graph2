@@ -1,6 +1,7 @@
 from node_editor.node import Node
 from PySide6 import QtWidgets
 from Example_Project.common_widgets import TextLineEdit
+from node_editor.PinUtils import PinType
 import requests
 
 class API_Node(Node):
@@ -12,8 +13,8 @@ class API_Node(Node):
         self.set_color(title_color=(0, 128, 0))
 
             
-        self.add_pin(name="Ex In", is_output=False, execution=True, )
-        self.add_pin(name="Ex Out", is_output=True, execution=True)
+        self.add_pin(name="Ex In", is_output=False, pin_type=PinType.EXEC)
+        self.add_pin(name="Ex Out", is_output=True, pin_type=PinType.EXEC)
         self.add_pin(name="Data", is_output=True)
 
         self.build()

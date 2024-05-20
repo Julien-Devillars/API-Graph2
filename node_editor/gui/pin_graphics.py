@@ -1,4 +1,5 @@
 from PySide6 import QtCore, QtGui, QtWidgets
+from node_editor.PinUtils import PinType
 
 
 class Pin_Graphics(QtWidgets.QGraphicsPathItem):
@@ -8,7 +9,7 @@ class Pin_Graphics(QtWidgets.QGraphicsPathItem):
         self.radius_ = 5
         self.margin = 2
 
-        self.execution = False
+        self.pin_type = PinType.BASE
 
         path = QtGui.QPainterPath()
 
@@ -27,11 +28,13 @@ class Pin_Graphics(QtWidgets.QGraphicsPathItem):
 
         self.text_path = QtGui.QPainterPath()
 
-    def set_execution(self, execution):
-        if execution:
-            path = QtGui.QPainterPath()
-
-            points = []
+    def set_type(self, type):
+        if self.pin_type == PinType.BASE : return
+        
+        path = QtGui.QPainterPath()
+        points = []
+        
+        if self.pin_type == PinType.EXEC:
             points.append(QtCore.QPointF(-6, -7))
             points.append(QtCore.QPointF(-6, 7))
             points.append(QtCore.QPointF(-2, 7))
@@ -40,6 +43,16 @@ class Pin_Graphics(QtWidgets.QGraphicsPathItem):
             points.append(QtCore.QPointF(-6, -7))
             path.addPolygon(QtGui.QPolygonF(points))
             self.setPath(path)
+            
+        if self.pin_type == PinType.MULTI:
+            points.append(QtCore.QPointF(-4, -4))
+            points.append(QtCore.QPointF(-4, 4))
+            points.append(QtCore.QPointF(4, 4))
+            points.append(QtCore.QPointF(4, -4))
+            points.append(QtCore.QPointF(-4, -4))
+            
+        path.addPolygon(QtGui.QPolygonF(points))
+        self.setPath(path)
 
     def set_name(self, name):
         nice_name = self.name.replace("_", " ").title()
@@ -55,17 +68,20 @@ class Pin_Graphics(QtWidgets.QGraphicsPathItem):
         self.text_path.addText(x, y, self.font, nice_name)
 
     def paint(self, painter, option=None, widget=None):
-        if self.execution:
+        if self.pin_type == PinType.EXEC:
             painter.setPen(QtCore.Qt.white)
+        elif self.pin_type == PinType.MULTI:
+            painter.setPen(QtCore.Qt.yellow)
         else:
             painter.setPen(QtCore.Qt.green)
 
         if self.is_connected():
-            if self.execution:
+            if self.pin_type == PinType.EXEC:
                 painter.setBrush(QtCore.Qt.white)
+            elif self.pin_type == PinType.MULTI:
+                painter.setBrush(QtCore.Qt.yellow)
             else:
                 painter.setBrush(QtCore.Qt.green)
-
         else:
             painter.setBrush(QtCore.Qt.NoBrush)
 
@@ -73,10 +89,10 @@ class Pin_Graphics(QtWidgets.QGraphicsPathItem):
 
         # Draw text
 
-        if not self.execution:
-            painter.setPen(QtCore.Qt.NoPen)
-            painter.setBrush(QtCore.Qt.white)
-            painter.drawPath(self.text_path)
+        #if not self.pin_type:
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.setBrush(QtCore.Qt.white)
+        painter.drawPath(self.text_path)
 
     def itemChange(self, change, value):
         if change == QtWidgets.QGraphicsItem.ItemScenePositionHasChanged and self.connection:

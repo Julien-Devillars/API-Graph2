@@ -1,5 +1,5 @@
 from node_editor.gui.pin_graphics import Pin_Graphics
-
+from node_editor.PinUtils import PinType
 
 class Pin(Pin_Graphics):
     def __init__(self, parent, scene):
@@ -8,18 +8,23 @@ class Pin(Pin_Graphics):
         self.name = None
         self.node = None
         self.connection = None
+        self.pin_type = 0
 
-    def set_execution(self, execution):
-        self.execution = execution
-        super().set_execution(execution)
+    def set_type(self, type):
+        self.pin_type = type
+        super().set_type(type)
         
-    def set_execute(self, execute):
-        self.inner_execute = execute
+    def set_execution(self):
+        self.pin_type = PinType.EXEC
+        super().set_type(self.pin_type)
         
-    def execute(self):
-        if(self.inner_execute is None):
-            return
-        self.inner_execute()
+    #def set_execute(self, execute):
+    #    self.inner_execute = execute
+    #    
+    #def execute(self):
+    #    if(self.inner_execute is None):
+    #        return
+    #    self.inner_execute()
 
     def set_name(self, name):
         self.name = name

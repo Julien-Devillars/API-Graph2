@@ -1,6 +1,7 @@
 from PySide6 import QtWidgets
 
 from node_editor.node import Node
+from node_editor.PinUtils import PinType
 
 
 class Button_Node(Node):
@@ -11,7 +12,7 @@ class Button_Node(Node):
         self.type_text = "Inputs"
         self.set_color(title_color=(128, 0, 0))
 
-        self.add_pin(name="Ex Out", is_output=True, execution=True)
+        self.add_pin(name="Ex Out", is_output=True, pin_type=PinType.EXEC)
 
         self.build()
 

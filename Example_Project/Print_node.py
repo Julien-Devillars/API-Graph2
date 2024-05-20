@@ -1,9 +1,7 @@
 from node_editor.node import Node
+from node_editor.PinUtils import PinType
 
 class Print_Node(Node):
-    
-    PIN_EXEC_STR = "Ex in"
-    PIN_DATA_STR = "Data"
     
     def __init__(self):
         super().__init__()
@@ -12,26 +10,21 @@ class Print_Node(Node):
         self.type_text = "Utils Nodes"
         self.set_color(title_color=(160, 32, 240))
 
-        self.add_pin(name = self.PIN_EXEC_STR, is_output=False, execution=True)
-        self.add_pin(name = self.PIN_DATA_STR, is_output=False)
+        self.add_pin(name = "Ex in", is_output=False, pin_type = PinType.EXEC)
+        self.add_pin(name = "Data", is_output=False)
         
         self.build()
 
-    def execute_input(self, input_pin):
-        if input_pin.name != self.PIN_DATA_STR:
-            return
+    def execute_inputs(self):
         
-        connected_pin = input_pin.get_connected_pin()
-        if not connected_pin:
-            return
+        data_pin = self.get_pin("Data")
+        if not data_pin: return
         
-        connected_node = connected_pin.node
-        if not connected_node:
-            return
+        connected_node = data_pin.get_connected_node()
+        if not connected_node: return
 
         if connected_node.get_data is not None:
             self.data = connected_node.get_data()
-
 
     def compute(self):
         print(self.data)

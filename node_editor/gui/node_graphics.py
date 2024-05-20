@@ -2,6 +2,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
 
 from node_editor.common import Node_Status
+from node_editor.PinUtils import PinType
 
 
 class Node_Graphics(QtWidgets.QGraphicsItem):
@@ -152,9 +153,9 @@ class Node_Graphics(QtWidgets.QGraphicsItem):
             if pin_dim["w"] > total_width:
                 total_width = pin_dim["w"]
 
-            if pin.execution and not exec_height_added or not pin.execution:
-                total_height += pin_dim["h"]
-                exec_height_added = True
+            #if pin.pin_type and not exec_height_added or not pin.pin_type:
+            total_height += pin_dim["h"]
+            #    exec_height_added = True
 
         # Add the margin to the total_width
         total_width += self.horizontal_margin
@@ -202,19 +203,20 @@ class Node_Graphics(QtWidgets.QGraphicsItem):
             # Do the execution pins
             exe_shifted = False
             for pin in self._pins:
-                if not pin.execution:
+                if pin.pin_type != PinType.EXEC:
                     continue
-                if not exe_shifted:
-                    y += pin_dim["h"]
-                    exe_shifted = True
+                #if not exe_shifted:
+                #    y += pin_dim["h"]
+                #    exe_shifted = True
+                y += pin_dim["h"]
                 if pin.is_output:
                     pin.setPos(total_width / 2 - 10, y)
                 else:
                     pin.setPos(-total_width / 2 + 10, y)
-
+                
             # Do the rest of the pins
             for pin in self._pins:
-                if pin.execution:
+                if pin.pin_type == PinType.EXEC:
                     continue
                 y += pin_dim["h"]
 

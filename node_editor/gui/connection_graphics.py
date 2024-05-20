@@ -1,5 +1,5 @@
 from PySide6 import QtCore, QtGui, QtWidgets
-
+from node_editor.PinUtils import PinType
 
 class Connection_Graphics(QtWidgets.QGraphicsPathItem):
     """
@@ -71,9 +71,12 @@ class Connection_Graphics(QtWidgets.QGraphicsPathItem):
         thickness = 0
         color = QtGui.QColor(0, 128, 255)
         if self.start_pin:
-            if self.start_pin.execution:
+            if self.start_pin.pin_type == PinType.EXEC:
                 thickness = 3
                 color = QtGui.QColor(255, 255, 255)
+            elif self.start_pin.pin_type == PinType.MULTI:
+                thickness = 3
+                color = QtGui.QColor(255, 255, 0)
 
         if self.isSelected() or self._do_highlight:
             painter.setPen(QtGui.QPen(color.lighter(), thickness + 2))
