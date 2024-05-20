@@ -16,3 +16,20 @@ class Add_Node(Node):
         self.add_pin(name="input B", is_output=False)
         self.add_pin(name="output", is_output=True)
         self.build()
+
+
+    def compute(self):
+        pin_a = self.get_pin("input A")
+        pin_b = self.get_pin("input B")
+        if pin_a == None or pin_b == None: return
+        
+        node_a = pin_a.get_connected_node()
+        node_b = pin_b.get_connected_node()
+        if node_a == None or node_b == None: return
+        
+        data_a = node_a.get_data()
+        data_b = node_b.get_data()
+        
+        self.data = int(data_a) + int(data_b)
+        
+    

@@ -24,9 +24,14 @@ class Scaler_Node(Node):
         self.scaler_line = FloatLineEdit()
         layout.addWidget(self.scaler_line)
         self.widget.setLayout(layout)
+        self.scaler_line.textChanged.connect(self.execute)
 
         proxy = QtWidgets.QGraphicsProxyWidget()
         proxy.setWidget(self.widget)
         proxy.setParentItem(self)
 
         super().init_widget()
+
+    def compute(self):
+        text = self.scaler_line.text()
+        self.data = text
